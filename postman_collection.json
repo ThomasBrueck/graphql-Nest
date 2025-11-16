@@ -1,0 +1,1590 @@
+{
+	"info": {
+		"_postman_id": "graphql-nest-complete-tests",
+		"name": "GraphQL Nest - Complete Tests",
+		"description": "Colección completa para testear todos los endpoints de la API GraphQL con tests automáticos",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Setup",
+			"item": [
+				{
+					"name": "Execute Seed",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Seed executed successfully', function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.executeSeed).to.be.true;",
+									"});",
+									"",
+									"console.log(' Database seeded successfully');"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation ExecuteSeed {\n  executeSeed\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Ejecuta el seed para poblar la base de datos con datos de prueba"
+					},
+					"response": []
+				}
+			],
+			"description": "Configuración inicial - ejecutar seed para tener datos de prueba"
+		},
+		{
+			"name": "2. Auth",
+			"item": [
+				{
+					"name": "Signup Admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Response has token', function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.signup).to.have.property('token');",
+									"    pm.expect(jsonData.data.signup.token).to.be.a('string').and.not.empty;",
+									"});",
+									"",
+									"pm.test('User has admin role', function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.signup.user.roles).to.include('admin');",
+									"});",
+									"",
+									"pm.test('User is active', function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.signup.user.isActive).to.be.true;",
+									"});",
+									"",
+									"// Save token and user info",
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.environment.set('adminToken', response.data.signup.token);",
+									"    pm.environment.set('adminId', response.data.signup.user.id);",
+									"    pm.environment.set('adminEmail', response.data.signup.user.email);",
+									"    console.log(' Admin token saved:', response.data.signup.token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation Signup($signupInput: SignupInput!) {\n  signup(signupInput: $signupInput) {\n    token\n    user {\n      id\n      name\n      email\n      roles\n      isActive\n    }\n  }\n}",
+								"variables": "{\n  \"signupInput\": {\n    \"name\": \"Admin Test\",\n    \"email\": \"{{adminEmail}}\",\n    \"password\": \"{{adminPassword}}\",\n    \"roles\": [\"admin\"]\n  }\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Registra un usuario administrador"
+					},
+					"response": []
+				},
+				{
+					"name": "Signup Regular User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Response has token', function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.signup).to.have.property('token');",
+									"    pm.expect(jsonData.data.signup.token).to.be.a('string').and.not.empty;",
+									"});",
+									"",
+									"pm.test('User has correct info', function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.signup.user).to.have.property('id');",
+									"    pm.expect(jsonData.data.signup.user).to.have.property('name');",
+									"    pm.expect(jsonData.data.signup.user).to.have.property('email');",
+									"});",
+									"",
+									"// Save token and user info",
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.environment.set('userToken', response.data.signup.token);",
+									"    pm.environment.set('userId', response.data.signup.user.id);",
+									"    pm.environment.set('userEmail', response.data.signup.user.email);",
+									"    console.log(' User token saved:', response.data.signup.token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation Signup($signupInput: SignupInput!) {\n  signup(signupInput: $signupInput) {\n    token\n    user {\n      id\n      name\n      email\n      roles\n      isActive\n    }\n  }\n}",
+								"variables": "{\n  \"signupInput\": {\n    \"name\": \"{{userName}}\",\n    \"email\": \"{{userEmail}}\",\n    \"password\": \"{{userPassword}}\"\n  }\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Registra un usuario normal"
+					},
+					"response": []
+				},
+				{
+					"name": "Login Admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Login successful - has token', function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.login).to.have.property('token');",
+									"    pm.expect(jsonData.data.login.token).to.be.a('string').and.not.empty;",
+									"});",
+									"",
+									"pm.test('User has admin role', function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.login.user.roles).to.include('admin');",
+									"});",
+									"",
+									"// Update token",
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.environment.set('adminToken', response.data.login.token);",
+									"    console.log(' Admin logged in successfully');",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation Login($loginInput: LoginInput!) {\n  login(loginInput: $loginInput) {\n    token\n    user {\n      id\n      name\n      email\n      roles\n      isActive\n    }\n  }\n}",
+								"variables": "{\n  \"loginInput\": {\n    \"email\": \"{{adminEmail}}\",\n    \"password\": \"{{adminPassword}}\"\n  }\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Login como administrador"
+					},
+					"response": []
+				},
+				{
+					"name": "Login Regular User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Login successful - has token', function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.login).to.have.property('token');",
+									"    pm.expect(jsonData.data.login.token).to.be.a('string').and.not.empty;",
+									"});",
+									"",
+									"// Update token",
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.environment.set('userToken', response.data.login.token);",
+									"    console.log(' User logged in successfully');",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation Login($loginInput: LoginInput!) {\n  login(loginInput: $loginInput) {\n    token\n    user {\n      id\n      name\n      email\n      roles\n      isActive\n    }\n  }\n}",
+								"variables": "{\n  \"loginInput\": {\n    \"email\": \"{{userEmail}}\",\n    \"password\": \"{{userPassword}}\"\n  }\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Login como usuario normal"
+					},
+					"response": []
+				},
+				{
+					"name": "Revalidate Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Token revalidated successfully', function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.revalidateToken).to.have.property('token');",
+									"    pm.expect(jsonData.data.revalidateToken.token).to.be.a('string').and.not.empty;",
+									"});",
+									"",
+									"pm.test('User info returned', function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.revalidateToken.user).to.have.property('id');",
+									"    pm.expect(jsonData.data.revalidateToken.user).to.have.property('email');",
+									"});",
+									"",
+									"// Update token",
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.environment.set('adminToken', response.data.revalidateToken.token);",
+									"    console.log(' Token revalidated successfully');",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query RevalidateToken {\n  revalidateToken {\n    token\n    user {\n      id\n      name\n      email\n      roles\n      isActive\n    }\n  }\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Revalida el token actual y obtiene uno nuevo"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints de autenticación"
+		},
+		{
+			"name": "3. Movies",
+			"item": [
+				{
+					"name": "Get All Movies",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Returns array of movies', function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.movies).to.be.an('array');",
+									"});",
+									"",
+									"pm.test('Movies have required fields', function () {",
+									"    const jsonData = pm.response.json();",
+									"    if (jsonData.data.movies.length > 0) {",
+									"        const movie = jsonData.data.movies[0];",
+									"        pm.expect(movie).to.have.property('id');",
+									"        pm.expect(movie).to.have.property('title');",
+									"        pm.expect(movie).to.have.property('description');",
+									"        pm.expect(movie).to.have.property('director');",
+									"        pm.expect(movie).to.have.property('releaseYear');",
+									"        pm.expect(movie).to.have.property('duration');",
+									"        pm.expect(movie).to.have.property('genre');",
+									"        // Save first movie ID for later tests",
+									"        pm.environment.set('movieId', movie.id);",
+									"    }",
+									"});",
+									"",
+									"console.log(' Retrieved', pm.response.json().data.movies.length, 'movies');"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query GetMovies {\n  movies {\n    id\n    title\n    description\n    director\n    releaseYear\n    duration\n    genre\n    createdAt\n    updatedAt\n  }\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Obtiene todas las películas (no requiere autenticación)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Movie by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Movie found', function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.movie).to.be.an('object');",
+									"    pm.expect(jsonData.data.movie).to.have.property('id');",
+									"});",
+									"",
+									"pm.test('Movie has all fields', function () {",
+									"    const jsonData = pm.response.json();",
+									"    const movie = jsonData.data.movie;",
+									"    pm.expect(movie).to.have.property('title');",
+									"    pm.expect(movie).to.have.property('description');",
+									"    pm.expect(movie).to.have.property('director');",
+									"    pm.expect(movie).to.have.property('releaseYear');",
+									"    pm.expect(movie).to.have.property('duration');",
+									"    pm.expect(movie).to.have.property('genre');",
+									"});",
+									"",
+									"console.log(' Movie found:', pm.response.json().data.movie.title);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query GetMovie($id: ID!) {\n  movie(id: $id) {\n    id\n    title\n    description\n    director\n    releaseYear\n    duration\n    genre\n    createdAt\n    updatedAt\n  }\n}",
+								"variables": "{\n  \"id\": \"{{movieId}}\"\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Obtiene una película por ID (no requiere autenticación)"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Movie (Admin)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Movie created successfully', function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.createMovie).to.be.an('object');",
+									"    pm.expect(jsonData.data.createMovie).to.have.property('id');",
+									"});",
+									"",
+									"pm.test('Movie has correct data', function () {",
+									"    const jsonData = pm.response.json();",
+									"    const movie = jsonData.data.createMovie;",
+									"    pm.expect(movie.title).to.equal('Test Movie');",
+									"    pm.expect(movie.director).to.equal('Test Director');",
+									"});",
+									"",
+									"// Save created movie ID",
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.environment.set('createdMovieId', response.data.createMovie.id);",
+									"    console.log(' Movie created with ID:', response.data.createMovie.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation CreateMovie($createMovieInput: CreateMovieInput!) {\n  createMovie(createMovieInput: $createMovieInput) {\n    id\n    title\n    description\n    director\n    releaseYear\n    duration\n    genre\n    createdAt\n    updatedAt\n  }\n}",
+								"variables": "{\n  \"createMovieInput\": {\n    \"title\": \"Test Movie\",\n    \"description\": \"A test movie created by Postman\",\n    \"director\": \"Test Director\",\n    \"releaseYear\": 2024,\n    \"duration\": 120,\n    \"genre\": \"Drama\"\n  }\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Crea una nueva película (requiere rol de admin)"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Movie (Admin)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Movie updated successfully', function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.updateMovie).to.be.an('object');",
+									"    pm.expect(jsonData.data.updateMovie).to.have.property('id');",
+									"});",
+									"",
+									"pm.test('Movie has updated data', function () {",
+									"    const jsonData = pm.response.json();",
+									"    const movie = jsonData.data.updateMovie;",
+									"    pm.expect(movie.title).to.equal('Updated Test Movie');",
+									"});",
+									"",
+									"console.log(' Movie updated successfully');"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation UpdateMovie($updateMovieInput: UpdateMovieInput!) {\n  updateMovie(updateMovieInput: $updateMovieInput) {\n    id\n    title\n    description\n    director\n    releaseYear\n    duration\n    genre\n    updatedAt\n  }\n}",
+								"variables": "{\n  \"updateMovieInput\": {\n    \"id\": \"{{createdMovieId}}\",\n    \"title\": \"Updated Test Movie\",\n    \"description\": \"Updated description\"\n  }\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Actualiza una película existente (requiere rol de admin)"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Movie (Admin)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Movie deleted successfully', function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.removeMovie).to.be.an('object');",
+									"    pm.expect(jsonData.data.removeMovie).to.have.property('id');",
+									"});",
+									"",
+									"console.log(' Movie deleted successfully');"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation RemoveMovie($id: ID!) {\n  removeMovie(id: $id) {\n    id\n    title\n  }\n}",
+								"variables": "{\n  \"id\": \"{{createdMovieId}}\"\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Elimina una película (requiere rol de admin)"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints para gestión de películas"
+		},
+		{
+			"name": "4. Reviews",
+			"item": [
+				{
+					"name": "Get All Reviews",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Returns array of reviews', function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.reviews).to.be.an('array');",
+									"});",
+									"",
+									"pm.test('Reviews have required fields', function () {",
+									"    const jsonData = pm.response.json();",
+									"    if (jsonData.data.reviews.length > 0) {",
+									"        const review = jsonData.data.reviews[0];",
+									"        pm.expect(review).to.have.property('id');",
+									"        pm.expect(review).to.have.property('comment');",
+									"        pm.expect(review).to.have.property('rating');",
+									"        pm.expect(review).to.have.property('movie');",
+									"        pm.expect(review).to.have.property('user');",
+									"    }",
+									"});",
+									"",
+									"console.log(' Retrieved', pm.response.json().data.reviews.length, 'reviews');"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query GetReviews {\n  reviews {\n    id\n    comment\n    rating\n    movie {\n      id\n      title\n    }\n    user {\n      id\n      name\n    }\n    createdAt\n    updatedAt\n  }\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Obtiene todas las reseñas (no requiere autenticación)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Review by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Review found', function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.review).to.be.an('object');",
+									"    pm.expect(jsonData.data.review).to.have.property('id');",
+									"});",
+									"",
+									"pm.test('Review has complete data', function () {",
+									"    const jsonData = pm.response.json();",
+									"    const review = jsonData.data.review;",
+									"    pm.expect(review).to.have.property('comment');",
+									"    pm.expect(review).to.have.property('rating');",
+									"    pm.expect(review).to.have.property('movie');",
+									"    pm.expect(review).to.have.property('user');",
+									"});",
+									"",
+									"console.log(' Review found');"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query GetReview($id: ID!) {\n  review(id: $id) {\n    id\n    comment\n    rating\n    movie {\n      id\n      title\n    }\n    user {\n      id\n      name\n    }\n    createdAt\n    updatedAt\n  }\n}",
+								"variables": "{\n  \"id\": \"{{reviewId}}\"\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Obtiene una reseña por ID (no requiere autenticación)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Movie Reviews",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Returns array of reviews', function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.movieReviews).to.be.an('array');",
+									"});",
+									"",
+									"pm.test('All reviews belong to the movie', function () {",
+									"    const jsonData = pm.response.json();",
+									"    const movieId = pm.environment.get('movieId');",
+									"    jsonData.data.movieReviews.forEach(review => {",
+									"        pm.expect(review.movie.id).to.equal(movieId);",
+									"    });",
+									"});",
+									"",
+									"console.log(' Retrieved', pm.response.json().data.movieReviews.length, 'reviews for movie');"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query GetMovieReviews($movieId: ID!) {\n  movieReviews(movieId: $movieId) {\n    id\n    comment\n    rating\n    movie {\n      id\n      title\n    }\n    user {\n      id\n      name\n    }\n    createdAt\n  }\n}",
+								"variables": "{\n  \"movieId\": \"{{movieId}}\"\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Obtiene todas las reseñas de una película específica"
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Reviews (Admin)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Returns array of reviews', function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.userReviews).to.be.an('array');",
+									"});",
+									"",
+									"pm.test('All reviews belong to the user', function () {",
+									"    const jsonData = pm.response.json();",
+									"    const userId = pm.environment.get('userId');",
+									"    jsonData.data.userReviews.forEach(review => {",
+									"        pm.expect(review.user.id).to.equal(userId);",
+									"    });",
+									"});",
+									"",
+									"console.log(' Retrieved', pm.response.json().data.userReviews.length, 'reviews for user');"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query GetUserReviews($userId: ID!) {\n  userReviews(userId: $userId) {\n    id\n    comment\n    rating\n    movie {\n      id\n      title\n    }\n    user {\n      id\n      name\n    }\n    createdAt\n  }\n}",
+								"variables": "{\n  \"userId\": \"{{userId}}\"\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Obtiene todas las reseñas de un usuario (requiere rol de admin)"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Review (User)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Review created successfully', function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.createReview).to.be.an('object');",
+									"    pm.expect(jsonData.data.createReview).to.have.property('id');",
+									"});",
+									"",
+									"pm.test('Review has correct data', function () {",
+									"    const jsonData = pm.response.json();",
+									"    const review = jsonData.data.createReview;",
+									"    pm.expect(review.comment).to.equal('Great movie!');",
+									"    pm.expect(review.rating).to.equal(5);",
+									"});",
+									"",
+									"// Save created review ID",
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.environment.set('createdReviewId', response.data.createReview.id);",
+									"    pm.environment.set('reviewId', response.data.createReview.id);",
+									"    console.log(' Review created with ID:', response.data.createReview.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{userToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation CreateReview($createReviewInput: CreateReviewInput!) {\n  createReview(createReviewInput: $createReviewInput) {\n    id\n    comment\n    rating\n    movie {\n      id\n      title\n    }\n    user {\n      id\n      name\n    }\n    createdAt\n  }\n}",
+								"variables": "{\n  \"createReviewInput\": {\n    \"comment\": \"Great movie!\",\n    \"rating\": 5,\n    \"movieId\": \"{{movieId}}\"\n  }\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Crea una nueva reseña (requiere autenticación)"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Review (User)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Review updated successfully', function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.updateReview).to.be.an('object');",
+									"    pm.expect(jsonData.data.updateReview).to.have.property('id');",
+									"});",
+									"",
+									"pm.test('Review has updated data', function () {",
+									"    const jsonData = pm.response.json();",
+									"    const review = jsonData.data.updateReview;",
+									"    pm.expect(review.comment).to.equal('Updated: Excellent movie!');",
+									"    pm.expect(review.rating).to.equal(4);",
+									"});",
+									"",
+									"console.log(' Review updated successfully');"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{userToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation UpdateReview($updateReviewInput: UpdateReviewInput!) {\n  updateReview(updateReviewInput: $updateReviewInput) {\n    id\n    comment\n    rating\n    movie {\n      id\n      title\n    }\n    updatedAt\n  }\n}",
+								"variables": "{\n  \"updateReviewInput\": {\n    \"id\": \"{{createdReviewId}}\",\n    \"comment\": \"Updated: Excellent movie!\",\n    \"rating\": 4\n  }\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Actualiza una reseña existente (requiere ser el propietario)"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Review (User)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Review deleted successfully', function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.removeReview).to.be.an('object');",
+									"    pm.expect(jsonData.data.removeReview).to.have.property('id');",
+									"});",
+									"",
+									"console.log(' Review deleted successfully');"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{userToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation RemoveReview($id: ID!) {\n  removeReview(id: $id) {\n    id\n    comment\n  }\n}",
+								"variables": "{\n  \"id\": \"{{createdReviewId}}\"\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Elimina una reseña (requiere ser el propietario)"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints para gestión de reseñas"
+		},
+		{
+			"name": "5. Users",
+			"item": [
+				{
+					"name": "Get All Users (Admin)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Returns array of users', function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.users).to.be.an('array');",
+									"    pm.expect(jsonData.data.users.length).to.be.greaterThan(0);",
+									"});",
+									"",
+									"pm.test('Users have required fields', function () {",
+									"    const jsonData = pm.response.json();",
+									"    const user = jsonData.data.users[0];",
+									"    pm.expect(user).to.have.property('id');",
+									"    pm.expect(user).to.have.property('name');",
+									"    pm.expect(user).to.have.property('email');",
+									"    pm.expect(user).to.have.property('roles');",
+									"    pm.expect(user).to.have.property('isActive');",
+									"});",
+									"",
+									"console.log(' Retrieved', pm.response.json().data.users.length, 'users');"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query GetUsers {\n  users {\n    id\n    name\n    email\n    roles\n    isActive\n    createdAt\n    updatedAt\n  }\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Obtiene todos los usuarios (requiere rol de admin)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get User by ID (Admin)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('User found', function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.user).to.be.an('object');",
+									"    pm.expect(jsonData.data.user).to.have.property('id');",
+									"});",
+									"",
+									"pm.test('User has complete data', function () {",
+									"    const jsonData = pm.response.json();",
+									"    const user = jsonData.data.user;",
+									"    pm.expect(user).to.have.property('name');",
+									"    pm.expect(user).to.have.property('email');",
+									"    pm.expect(user).to.have.property('roles');",
+									"    pm.expect(user).to.have.property('isActive');",
+									"});",
+									"",
+									"console.log(' User found:', pm.response.json().data.user.name);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query GetUser($id: ID!) {\n  user(id: $id) {\n    id\n    name\n    email\n    roles\n    isActive\n    createdAt\n    updatedAt\n  }\n}",
+								"variables": "{\n  \"id\": \"{{userId}}\"\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Obtiene un usuario por ID (requiere rol de admin)"
+					},
+					"response": []
+				},
+				{
+					"name": "Update User (Admin)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('User updated successfully', function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.updateUser).to.be.an('object');",
+									"    pm.expect(jsonData.data.updateUser).to.have.property('id');",
+									"});",
+									"",
+									"pm.test('User has updated data', function () {",
+									"    const jsonData = pm.response.json();",
+									"    const user = jsonData.data.updateUser;",
+									"    pm.expect(user.name).to.equal('Updated User Name');",
+									"});",
+									"",
+									"console.log(' User updated successfully');"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation UpdateUser($updateUserInput: UpdateUserInput!) {\n  updateUser(updateUserInput: $updateUserInput) {\n    id\n    name\n    email\n    roles\n    isActive\n    updatedAt\n  }\n}",
+								"variables": "{\n  \"updateUserInput\": {\n    \"id\": \"{{userId}}\",\n    \"name\": \"Updated User Name\"\n  }\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Actualiza un usuario (requiere rol de admin)"
+					},
+					"response": []
+				},
+				{
+					"name": "Block User (Admin)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('User blocked successfully', function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.blockUser).to.be.an('object');",
+									"    pm.expect(jsonData.data.blockUser).to.have.property('id');",
+									"});",
+									"",
+									"pm.test('User is now inactive', function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.blockUser.isActive).to.be.false;",
+									"});",
+									"",
+									"console.log(' User blocked successfully');"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation BlockUser($id: ID!) {\n  blockUser(id: $id) {\n    id\n    name\n    email\n    isActive\n  }\n}",
+								"variables": "{\n  \"id\": \"{{userId}}\"\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Bloquea un usuario (requiere rol de admin)"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User (Admin)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('User deleted successfully', function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.removeUser).to.be.an('object');",
+									"    pm.expect(jsonData.data.removeUser).to.have.property('id');",
+									"});",
+									"",
+									"console.log(' User deleted successfully');"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation RemoveUser($id: ID!) {\n  removeUser(id: $id) {\n    id\n    name\n    email\n  }\n}",
+								"variables": "{\n  \"id\": \"{{userId}}\"\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Elimina un usuario (requiere rol de admin)"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints para gestión de usuarios (todos requieren rol de admin)"
+		},
+		{
+			"name": "6. Cleanup",
+			"item": [
+				{
+					"name": "Delete Database",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Database deleted successfully', function () {",
+									"    const jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.deleteDatabase).to.be.true;",
+									"});",
+									"",
+									"console.log(' Database cleaned successfully');"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation DeleteDatabase {\n  deleteDatabase\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Elimina todos los datos de la base de datos (usar con precaución)"
+					},
+					"response": []
+				}
+			],
+			"description": "Limpieza de la base de datos"
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3000"
+		}
+	]
+}
+
