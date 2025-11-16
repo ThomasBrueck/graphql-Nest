@@ -1,0 +1,728 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2025-11-16T00:00:00.000Z",
+  "__export_source": "insomnia.desktop.app:v2023.5.8",
+  "resources": [
+    {
+      "_id": "wrk_graphql_nest",
+      "parentId": null,
+      "modified": 1700000000000,
+      "created": 1700000000000,
+      "name": "GraphQL NestJS - Movies API",
+      "description": "Colección completa para probar la API GraphQL de películas, reseñas y usuarios",
+      "scope": "collection",
+      "_type": "workspace"
+    },
+    {
+      "_id": "env_base",
+      "parentId": "wrk_graphql_nest",
+      "modified": 1700000000000,
+      "created": 1700000000000,
+      "name": "Base Environment",
+      "data": {
+        "base_url": "http://localhost:3000/graphql",
+        "token": "",
+        "adminEmail": "",
+        "adminId": "",
+        "userId": "",
+        "movieId": "",
+        "reviewId": ""
+      },
+      "_type": "environment"
+    },
+    {
+      "_id": "jar_cookies",
+      "parentId": "wrk_graphql_nest",
+      "modified": 1700000000000,
+      "created": 1700000000000,
+      "name": "Cookie Jar",
+      "cookies": [],
+      "_type": "cookie_jar"
+    },
+    {
+      "_id": "fld_auth",
+      "parentId": "wrk_graphql_nest",
+      "modified": 1700000000000,
+      "created": 1700000000000,
+      "name": "Auth",
+      "description": "Endpoints de autenticación",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1700000000000,
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_signup_admin",
+      "parentId": "fld_auth",
+      "modified": 1700000000000,
+      "created": 1700000000000,
+      "url": "{{ _.base_url }}",
+      "name": "Register Admin",
+      "description": "Registra un usuario administrador. El token se guarda automáticamente.",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/graphql",
+        "text": "{\"query\":\"mutation Signup($signupInput: SignupInput!) {\\n  signup(signupInput: $signupInput) {\\n    token\\n    user {\\n      id\\n      name\\n      email\\n      roles\\n      isActive\\n    }\\n  }\\n}\",\"variables\":{\"signupInput\":{\"name\":\"Admin User\",\"email\":\"admin@example.com\",\"password\":\"Admin123!\",\"roles\":[\"admin\"]}}}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1700000000000,
+      "isPrivate": false,
+      "_type": "request"
+    },
+    {
+      "_id": "req_signup_user",
+      "parentId": "fld_auth",
+      "modified": 1700000000000,
+      "created": 1700000000000,
+      "url": "{{ _.base_url }}",
+      "name": "Register User",
+      "description": "Registra un usuario normal. El token se guarda automáticamente.",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/graphql",
+        "text": "{\"query\":\"mutation Signup($signupInput: SignupInput!) {\\n  signup(signupInput: $signupInput) {\\n    token\\n    user {\\n      id\\n      name\\n      email\\n      roles\\n      isActive\\n    }\\n  }\\n}\",\"variables\":{\"signupInput\":{\"name\":\"Juan Perez\",\"email\":\"juan@example.com\",\"password\":\"Password123!\"}}}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1699999000000,
+      "isPrivate": false,
+      "_type": "request"
+    },
+    {
+      "_id": "req_login_admin",
+      "parentId": "fld_auth",
+      "modified": 1700000000000,
+      "created": 1700000000000,
+      "url": "{{ _.base_url }}",
+      "name": "Login Admin",
+      "description": "Login con email y password. El token se guarda automáticamente.",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/graphql",
+        "text": "{\"query\":\"mutation Login($loginInput: LoginInput!) {\\n  login(loginInput: $loginInput) {\\n    token\\n    user {\\n      id\\n      name\\n      email\\n      roles\\n      isActive\\n    }\\n  }\\n}\",\"variables\":{\"loginInput\":{\"email\":\"admin@example.com\",\"password\":\"Admin123!\"}}}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1699998000000,
+      "isPrivate": false,
+      "_type": "request"
+    },
+    {
+      "_id": "req_login_user",
+      "parentId": "fld_auth",
+      "modified": 1700000000000,
+      "created": 1700000000000,
+      "url": "{{ _.base_url }}",
+      "name": "Login User",
+      "description": "Login de usuario normal",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/graphql",
+        "text": "{\"query\":\"mutation Login($loginInput: LoginInput!) {\\n  login(loginInput: $loginInput) {\\n    token\\n    user {\\n      id\\n      name\\n      email\\n      roles\\n      isActive\\n    }\\n  }\\n}\",\"variables\":{\"loginInput\":{\"email\":\"juan@example.com\",\"password\":\"Password123!\"}}}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1699997000000,
+      "isPrivate": false,
+      "_type": "request"
+    },
+    {
+      "_id": "fld_seed",
+      "parentId": "wrk_graphql_nest",
+      "modified": 1700000000000,
+      "created": 1700000000000,
+      "name": "Seed",
+      "description": "Endpoints para seed de datos",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1699000000000,
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_execute_seed",
+      "parentId": "fld_seed",
+      "modified": 1700000000000,
+      "created": 1700000000000,
+      "url": "{{ _.base_url }}",
+      "name": "Execute Seed",
+      "description": "Ejecuta el seed para rellenar la base de datos con datos de prueba",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/graphql",
+        "text": "{\"query\":\"mutation ExecuteSeed {\\n  executeSeed\\n}\",\"variables\":{}}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1699000000000,
+      "isPrivate": false,
+      "_type": "request"
+    },
+    {
+      "_id": "req_delete_database",
+      "parentId": "fld_seed",
+      "modified": 1700000000000,
+      "created": 1700000000000,
+      "url": "{{ _.base_url }}",
+      "name": "Delete Database",
+      "description": "Elimina todos los datos de la base de datos",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/graphql",
+        "text": "{\"query\":\"mutation DeleteDatabase {\\n  deleteDatabase\\n}\",\"variables\":{}}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1698999000000,
+      "isPrivate": false,
+      "_type": "request"
+    },
+    {
+      "_id": "fld_users",
+      "parentId": "wrk_graphql_nest",
+      "modified": 1700000000000,
+      "created": 1700000000000,
+      "name": "Users",
+      "description": "Endpoints de usuarios",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1698000000000,
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_users_findAll",
+      "parentId": "fld_users",
+      "modified": 1700000000000,
+      "created": 1700000000000,
+      "url": "{{ _.base_url }}",
+      "name": "Get All Users",
+      "description": "Obtiene todos los usuarios (requiere token de admin)",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/graphql",
+        "text": "{\"query\":\"query {\\n  users {\\n    id\\n    name\\n    email\\n    roles\\n    isActive\\n    createdAt\\n    updatedAt\\n  }\\n}\",\"variables\":{}}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token }}"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1698000000000,
+      "isPrivate": false,
+      "_type": "request"
+    },
+    {
+      "_id": "req_users_findOne",
+      "parentId": "fld_users",
+      "modified": 1700000000000,
+      "created": 1700000000000,
+      "url": "{{ _.base_url }}",
+      "name": "Get User by ID",
+      "description": "Obtiene un usuario por ID (requiere token de admin)",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/graphql",
+        "text": "{\"query\":\"query User($id: ID!) {\\n  user(id: $id) {\\n    id\\n    name\\n    email\\n    roles\\n    isActive\\n    createdAt\\n    updatedAt\\n  }\\n}\",\"variables\":{\"id\":\"{{ _.userId }}\"}}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token }}"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1697999000000,
+      "isPrivate": false,
+      "_type": "request"
+    },
+    {
+      "_id": "req_users_update",
+      "parentId": "fld_users",
+      "modified": 1700000000000,
+      "created": 1700000000000,
+      "url": "{{ _.base_url }}",
+      "name": "Update User",
+      "description": "Actualiza un usuario (requiere token de admin)",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/graphql",
+        "text": "{\"query\":\"mutation UpdateUser($updateUserInput: UpdateUserInput!) {\\n  updateUser(updateUserInput: $updateUserInput) {\\n    id\\n    name\\n    email\\n    roles\\n    isActive\\n  }\\n}\",\"variables\":{\"updateUserInput\":{\"id\":\"{{ _.userId }}\",\"name\":\"Updated Name\"}}}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token }}"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1697998000000,
+      "isPrivate": false,
+      "_type": "request"
+    },
+    {
+      "_id": "req_users_block",
+      "parentId": "fld_users",
+      "modified": 1700000000000,
+      "created": 1700000000000,
+      "url": "{{ _.base_url }}",
+      "name": "Block User",
+      "description": "Bloquea un usuario (requiere token de admin)",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/graphql",
+        "text": "{\"query\":\"mutation BlockUser($id: ID!) {\\n  blockUser(id: $id) {\\n    id\\n    name\\n    email\\n    isActive\\n  }\\n}\",\"variables\":{\"id\":\"{{ _.userId }}\"}}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token }}"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1697997000000,
+      "isPrivate": false,
+      "_type": "request"
+    },
+    {
+      "_id": "req_users_remove",
+      "parentId": "fld_users",
+      "modified": 1700000000000,
+      "created": 1700000000000,
+      "url": "{{ _.base_url }}",
+      "name": "Remove User",
+      "description": "Elimina un usuario (requiere token de admin)",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/graphql",
+        "text": "{\"query\":\"mutation RemoveUser($id: ID!) {\\n  removeUser(id: $id) {\\n    id\\n    name\\n    email\\n  }\\n}\",\"variables\":{\"id\":\"{{ _.userId }}\"}}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token }}"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1697996000000,
+      "isPrivate": false,
+      "_type": "request"
+    },
+    {
+      "_id": "fld_movies",
+      "parentId": "wrk_graphql_nest",
+      "modified": 1700000000000,
+      "created": 1700000000000,
+      "name": "Movies",
+      "description": "Endpoints de películas",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1697000000000,
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_movies_findAll",
+      "parentId": "fld_movies",
+      "modified": 1700000000000,
+      "created": 1700000000000,
+      "url": "{{ _.base_url }}",
+      "name": "Get All Movies",
+      "description": "Obtiene todas las películas",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/graphql",
+        "text": "{\"query\":\"query {\\n  movies {\\n    id\\n    title\\n    description\\n    director\\n    releaseYear\\n    duration\\n    genre\\n    createdAt\\n    updatedAt\\n  }\\n}\",\"variables\":{}}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1697000000000,
+      "isPrivate": false,
+      "_type": "request"
+    },
+    {
+      "_id": "req_movies_findOne",
+      "parentId": "fld_movies",
+      "modified": 1700000000000,
+      "created": 1700000000000,
+      "url": "{{ _.base_url }}",
+      "name": "Get Movie by ID",
+      "description": "Obtiene una película por ID",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/graphql",
+        "text": "{\"query\":\"query Movie($id: ID!) {\\n  movie(id: $id) {\\n    id\\n    title\\n    description\\n    director\\n    releaseYear\\n    duration\\n    genre\\n    createdAt\\n    updatedAt\\n  }\\n}\",\"variables\":{\"id\":\"{{ _.movieId }}\"}}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1696999000000,
+      "isPrivate": false,
+      "_type": "request"
+    },
+    {
+      "_id": "req_movies_create",
+      "parentId": "fld_movies",
+      "modified": 1700000000000,
+      "created": 1700000000000,
+      "url": "{{ _.base_url }}",
+      "name": "Create Movie",
+      "description": "Crea una nueva película (requiere token de admin)",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/graphql",
+        "text": "{\"query\":\"mutation CreateMovie($createMovieInput: CreateMovieInput!) {\\n  createMovie(createMovieInput: $createMovieInput) {\\n    id\\n    title\\n    description\\n    director\\n    releaseYear\\n    duration\\n    genre\\n  }\\n}\",\"variables\":{\"createMovieInput\":{\"title\":\"New Movie\",\"description\":\"This is a new movie description with at least 10 characters\",\"director\":\"John Director\",\"releaseYear\":2023,\"duration\":120,\"genre\":\"Action\"}}}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token }}"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1696998000000,
+      "isPrivate": false,
+      "_type": "request"
+    },
+    {
+      "_id": "req_movies_update",
+      "parentId": "fld_movies",
+      "modified": 1700000000000,
+      "created": 1700000000000,
+      "url": "{{ _.base_url }}",
+      "name": "Update Movie",
+      "description": "Actualiza una película (requiere token de admin)",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/graphql",
+        "text": "{\"query\":\"mutation UpdateMovie($updateMovieInput: UpdateMovieInput!) {\\n  updateMovie(updateMovieInput: $updateMovieInput) {\\n    id\\n    title\\n    description\\n    director\\n    releaseYear\\n    duration\\n    genre\\n  }\\n}\",\"variables\":{\"updateMovieInput\":{\"id\":\"{{ _.movieId }}\",\"title\":\"Updated Movie Title\"}}}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token }}"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1696997000000,
+      "isPrivate": false,
+      "_type": "request"
+    },
+    {
+      "_id": "req_movies_remove",
+      "parentId": "fld_movies",
+      "modified": 1700000000000,
+      "created": 1700000000000,
+      "url": "{{ _.base_url }}",
+      "name": "Remove Movie",
+      "description": "Elimina una película (requiere token de admin)",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/graphql",
+        "text": "{\"query\":\"mutation RemoveMovie($id: ID!) {\\n  removeMovie(id: $id) {\\n    id\\n    title\\n  }\\n}\",\"variables\":{\"id\":\"{{ _.movieId }}\"}}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token }}"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1696996000000,
+      "isPrivate": false,
+      "_type": "request"
+    },
+    {
+      "_id": "fld_reviews",
+      "parentId": "wrk_graphql_nest",
+      "modified": 1700000000000,
+      "created": 1700000000000,
+      "name": "Reviews",
+      "description": "Endpoints de reseñas",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1696000000000,
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_reviews_findAll",
+      "parentId": "fld_reviews",
+      "modified": 1700000000000,
+      "created": 1700000000000,
+      "url": "{{ _.base_url }}",
+      "name": "Get All Reviews",
+      "description": "Obtiene todas las reseñas",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/graphql",
+        "text": "{\"query\":\"query {\\n  reviews {\\n    id\\n    comment\\n    rating\\n    movie {\\n      id\\n      title\\n    }\\n    user {\\n      id\\n      name\\n    }\\n    createdAt\\n    updatedAt\\n  }\\n}\",\"variables\":{}}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1696000000000,
+      "isPrivate": false,
+      "_type": "request"
+    },
+    {
+      "_id": "req_reviews_findOne",
+      "parentId": "fld_reviews",
+      "modified": 1700000000000,
+      "created": 1700000000000,
+      "url": "{{ _.base_url }}",
+      "name": "Get Review by ID",
+      "description": "Obtiene una reseña por ID",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/graphql",
+        "text": "{\"query\":\"query Review($id: ID!) {\\n  review(id: $id) {\\n    id\\n    comment\\n    rating\\n    movie {\\n      id\\n      title\\n    }\\n    user {\\n      id\\n      name\\n    }\\n    createdAt\\n    updatedAt\\n  }\\n}\",\"variables\":{\"id\":\"{{ _.reviewId }}\"}}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1695999000000,
+      "isPrivate": false,
+      "_type": "request"
+    },
+    {
+      "_id": "req_reviews_movie",
+      "parentId": "fld_reviews",
+      "modified": 1700000000000,
+      "created": 1700000000000,
+      "url": "{{ _.base_url }}",
+      "name": "Get Movie Reviews",
+      "description": "Obtiene todas las reseñas de una película",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/graphql",
+        "text": "{\"query\":\"query MovieReviews($movieId: ID!) {\\n  movieReviews(movieId: $movieId) {\\n    id\\n    comment\\n    rating\\n    user {\\n      id\\n      name\\n    }\\n    createdAt\\n  }\\n}\",\"variables\":{\"movieId\":\"{{ _.movieId }}\"}}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1695998000000,
+      "isPrivate": false,
+      "_type": "request"
+    },
+    {
+      "_id": "req_reviews_user",
+      "parentId": "fld_reviews",
+      "modified": 1700000000000,
+      "created": 1700000000000,
+      "url": "{{ _.base_url }}",
+      "name": "Get User Reviews",
+      "description": "Obtiene todas las reseñas de un usuario (requiere token de admin)",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/graphql",
+        "text": "{\"query\":\"query UserReviews($userId: ID!) {\\n  userReviews(userId: $userId) {\\n    id\\n    comment\\n    rating\\n    movie {\\n      id\\n      title\\n    }\\n    createdAt\\n  }\\n}\",\"variables\":{\"userId\":\"{{ _.userId }}\"}}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token }}"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1695997000000,
+      "isPrivate": false,
+      "_type": "request"
+    },
+    {
+      "_id": "req_reviews_create",
+      "parentId": "fld_reviews",
+      "modified": 1700000000000,
+      "created": 1700000000000,
+      "url": "{{ _.base_url }}",
+      "name": "Create Review",
+      "description": "Crea una nueva reseña (requiere token de usuario)",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/graphql",
+        "text": "{\"query\":\"mutation CreateReview($createReviewInput: CreateReviewInput!) {\\n  createReview(createReviewInput: $createReviewInput) {\\n    id\\n    comment\\n    rating\\n    movie {\\n      id\\n      title\\n    }\\n    user {\\n      id\\n      name\\n    }\\n  }\\n}\",\"variables\":{\"createReviewInput\":{\"comment\":\"This is an amazing movie! I really enjoyed it.\",\"rating\":5,\"movieId\":\"{{ _.movieId }}\"}}}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token }}"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1695996000000,
+      "isPrivate": false,
+      "_type": "request"
+    },
+    {
+      "_id": "req_reviews_update",
+      "parentId": "fld_reviews",
+      "modified": 1700000000000,
+      "created": 1700000000000,
+      "url": "{{ _.base_url }}",
+      "name": "Update Review",
+      "description": "Actualiza una reseña (solo el dueño puede actualizarla)",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/graphql",
+        "text": "{\"query\":\"mutation UpdateReview($updateReviewInput: UpdateReviewInput!) {\\n  updateReview(updateReviewInput: $updateReviewInput) {\\n    id\\n    comment\\n    rating\\n    movie {\\n      id\\n      title\\n    }\\n  }\\n}\",\"variables\":{\"updateReviewInput\":{\"id\":\"{{ _.reviewId }}\",\"comment\":\"Updated review comment with more details\",\"rating\":4}}}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token }}"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1695995000000,
+      "isPrivate": false,
+      "_type": "request"
+    },
+    {
+      "_id": "req_reviews_remove",
+      "parentId": "fld_reviews",
+      "modified": 1700000000000,
+      "created": 1700000000000,
+      "url": "{{ _.base_url }}",
+      "name": "Remove Review",
+      "description": "Elimina una reseña (el dueño o admin pueden eliminarla)",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/graphql",
+        "text": "{\"query\":\"mutation RemoveReview($id: ID!) {\\n  removeReview(id: $id) {\\n    id\\n    comment\\n  }\\n}\",\"variables\":{\"id\":\"{{ _.reviewId }}\"}}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token }}"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1695994000000,
+      "isPrivate": false,
+      "_type": "request"
+    }
+  ]
+}
+
