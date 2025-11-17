@@ -9,6 +9,7 @@ import { AuthModule } from './auth/auth.module';
 import { MoviesModule } from './movies/movies.module';
 import { ReviewsModule } from './reviews/reviews.module';
 import { SeedModule } from './seed/seed.module';
+import { formatGraphQLError } from './common/graphql-error-formatter';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { SeedModule } from './seed/seed.module';
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       playground: true,
+      formatError: formatGraphQLError,
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
