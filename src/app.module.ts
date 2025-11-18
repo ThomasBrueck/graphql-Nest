@@ -29,6 +29,9 @@ import { formatGraphQLError } from './common/graphql-error-formatter';
       password: process.env.DB_PASSWORD,
       autoLoadEntities: true,
       synchronize: true, // Solo en desarrollo, usar migraciones en producción
+      ssl: {
+        rejectUnauthorized: false,
+      },
     }),
     UsersModule,
     AuthModule,
@@ -39,4 +42,4 @@ import { formatGraphQLError } from './common/graphql-error-formatter';
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule { }
