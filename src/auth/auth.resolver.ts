@@ -8,6 +8,7 @@ import { ValidRoles } from './enums/valid-roles.enum';
 import { CurrentUser } from './decorators/current-user.decorator';
 import { User } from '../users/entities/user.entity';
 
+// Expone las operaciones GraphQL relacionadas a autenticación.
 @Resolver('Auth')
 export class AuthResolver {
   constructor(private readonly authService: AuthService) {}

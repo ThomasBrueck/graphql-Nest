@@ -1,6 +1,7 @@
 import { InputType, Field } from '@nestjs/graphql';
 import { IsEmail, IsString, MinLength, IsArray, IsOptional } from 'class-validator';
 
+// Datos requeridos para registrar usuarios desde la API GraphQL.
 @InputType()
 export class SignupInput {
   @Field(() => String)

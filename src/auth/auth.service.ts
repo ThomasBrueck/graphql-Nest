@@ -12,6 +12,9 @@ import { AuthResponse } from './types/auth-response.type';
 import { JwtPayload } from '../interfaces/jwt-payload.interface';
 import { User } from '../users/entities/user.entity';
 
+/**
+ * Maneja la creación de usuarios, login y validación JWT.
+ */
 @Injectable()
 export class AuthService {
   constructor(

@@ -7,6 +7,7 @@ import { AuthResolver } from './auth.resolver';
 import { UsersModule } from '../users/users.module';
 import { JwtStrategy } from './strategies/jwt.strategy';
 
+// Registra dependencias y providers necesarios para el flujo de autenticación.
 @Module({
   imports: [
     ConfigModule,

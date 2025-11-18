@@ -6,6 +6,7 @@ import { AuthService } from '../auth.service';
 import { JwtPayload } from '../../interfaces/jwt-payload.interface';
 import { User } from '../../users/entities/user.entity';
 
+// Configura Passport para validar tokens JWT en cada request.
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(

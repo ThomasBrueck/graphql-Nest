@@ -10,6 +10,7 @@ import { GqlExecutionContext } from '@nestjs/graphql';
 import { Observable } from 'rxjs';
 import { User } from '../../../users/entities/user.entity';
 
+// Verifica que el usuario autenticado posea alguno de los roles requeridos.
 @Injectable()
 export class UserRoleGuard implements CanActivate {
   constructor(private readonly reflector: Reflector) {}
