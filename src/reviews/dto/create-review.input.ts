@@ -1,6 +1,7 @@
 import { InputType, Field, Int } from '@nestjs/graphql';
 import { IsInt, IsString, IsUUID, Max, Min, MinLength } from 'class-validator';
 
+// Define el payload mínimo para crear reseñas autenticadas.
 @InputType()
 export class CreateReviewInput {
   @Field(() => String)

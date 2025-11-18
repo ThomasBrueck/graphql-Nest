@@ -10,6 +10,9 @@ import {
 import { Movie } from '../../movies/entities/movie.entity';
 import { User } from '../../users/entities/user.entity';
 
+/**
+ * Entidad persistente para las reseñas creadas por los usuarios.
+ */
 @Entity('reviews')
 @ObjectType()
 export class Review {

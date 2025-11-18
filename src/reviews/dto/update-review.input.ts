@@ -2,6 +2,7 @@ import { InputType, Field, PartialType, ID, Int } from '@nestjs/graphql';
 import { IsInt, IsOptional, IsString, IsUUID, Max, Min, MinLength } from 'class-validator';
 import { CreateReviewInput } from './create-review.input';
 
+// Permite actualizar campos puntuales de una reseña existente.
 @InputType()
 export class UpdateReviewInput extends PartialType(CreateReviewInput) {
   @Field(() => ID)

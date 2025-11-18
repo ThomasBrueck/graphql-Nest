@@ -6,6 +6,7 @@ import { UpdateMovieInput } from './dto/update-movie.input';
 import { Auth } from '../auth/decorators/auth/auth.decorator';
 import { ValidRoles } from '../auth/enums/valid-roles.enum';
 
+// Resolver que conecta las operaciones GraphQL con la capa de servicio de películas.
 @Resolver(() => Movie)
 export class MoviesResolver {
   constructor(private readonly moviesService: MoviesService) {}

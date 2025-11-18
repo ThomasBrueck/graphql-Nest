@@ -1,5 +1,7 @@
 # GraphQL Movies API - NestJS
 
+Informe completo en INFORME.MD
+
 ## URL Desplegada
 
 https://graphql-nest-yuv8.onrender.com/

@@ -1,6 +1,7 @@
 import { InputType, Field, Int } from '@nestjs/graphql';
 import { IsString, MinLength, IsInt, Min, Max } from 'class-validator';
 
+// Payload utilizado para registrar nuevas películas vía GraphQL.
 @InputType()
 export class CreateMovieInput {
   @Field(() => String)

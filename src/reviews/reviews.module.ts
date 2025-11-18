@@ -6,6 +6,7 @@ import { Review } from './entities/review.entity';
 import { MoviesModule } from '../movies/movies.module';
 import { AuthModule } from '../auth/auth.module';
 
+// Módulo que agrupa resolver, servicio y entidad de reseñas.
 @Module({
   imports: [
     TypeOrmModule.forFeature([Review]),

@@ -5,6 +5,9 @@ import { CreateMovieInput } from './dto/create-movie.input';
 import { UpdateMovieInput } from './dto/update-movie.input';
 import { Movie } from './entities/movie.entity';
 
+/**
+ * Orquesta la lógica de persistencia para las películas expuestas por GraphQL.
+ */
 @Injectable()
 export class MoviesService {
   constructor(
@@ -12,6 +15,7 @@ export class MoviesService {
     private readonly movieRepository: Repository<Movie>,
   ) {}
 
+  // Registra una película nueva a partir de los datos validados del DTO.
   async create(createMovieInput: CreateMovieInput): Promise<Movie> {
     const movie = this.movieRepository.create(createMovieInput);
     return await this.movieRepository.save(movie);
@@ -21,6 +25,7 @@ export class MoviesService {
     return await this.movieRepository.find();
   }
 
+  // Obtiene una película por ID validando su existencia.
   async findOne(id: string): Promise<Movie> {
     const movie = await this.movieRepository.findOne({ where: { id } });
     
@@ -42,6 +47,7 @@ export class MoviesService {
     return await this.movieRepository.save(movie);
   }
 
+  // Elimina una película y regresa el registro borrado.
   async remove(id: string): Promise<Movie> {
     const movie = await this.movieRepository.findOne({ where: { id } });
     
@@ -55,6 +61,7 @@ export class MoviesService {
     return movie;
   }
 
+  // Utilizado en pruebas/seed para limpiar la tabla de películas.
   async removeAll(): Promise<void> {
     await this.movieRepository.query('TRUNCATE TABLE movies RESTART IDENTITY CASCADE;');
   }

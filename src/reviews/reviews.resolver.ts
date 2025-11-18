@@ -8,6 +8,7 @@ import { ValidRoles } from '../auth/enums/valid-roles.enum';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { User } from '../users/entities/user.entity';
 
+// Resolver GraphQL que expone las operaciones sobre reseñas.
 @Resolver(() => Review)
 export class ReviewsResolver {
   constructor(private readonly reviewsService: ReviewsService) {}

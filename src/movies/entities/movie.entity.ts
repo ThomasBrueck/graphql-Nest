@@ -9,6 +9,9 @@ import {
 } from 'typeorm';
 import { Review } from '../../reviews/entities/review.entity';
 
+/**
+ * Entidad Movie expuesta como ObjectType para el esquema GraphQL.
+ */
 @Entity('movies')
 @ObjectType()
 export class Movie {
@@ -40,6 +43,7 @@ export class Movie {
   @Field(() => String)
   genre: string;
 
+  // Lista de reseñas asociadas a la película.
   @OneToMany(() => Review, (review) => review.movie, { cascade: true })
   @Field(() => [Review], { nullable: true })
   reviews?: Review[];

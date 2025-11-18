@@ -2,6 +2,7 @@ import { InputType, Field, PartialType, ID } from '@nestjs/graphql';
 import { IsDateString, IsOptional, IsString, IsUUID, MinLength } from 'class-validator';
 import { CreateMovieInput } from './create-movie.input';
 
+// Extiende el DTO de creación para permitir updates parciales.
 @InputType()
 export class UpdateMovieInput extends PartialType(CreateMovieInput) {
   @Field(() => ID)

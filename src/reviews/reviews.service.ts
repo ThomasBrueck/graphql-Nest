@@ -13,6 +13,9 @@ import { Review } from './entities/review.entity';
 import { Movie } from '../movies/entities/movie.entity';
 import { User } from '../users/entities/user.entity';
 
+/**
+ * Servicio que centraliza la lógica de negocio de las reseñas.
+ */
 @Injectable()
 export class ReviewsService {
   private readonly logger = new Logger('ReviewsService');
